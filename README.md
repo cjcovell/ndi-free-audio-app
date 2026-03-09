@@ -1,13 +1,15 @@
 # NDI Free Audio App for macOS
 
-A simple macOS app wrapper for [NDI Free Audio](https://docs.ndi.video/all/developing-with-ndi/utilities/free-audio) that provides a native GUI for selecting audio devices and NDI sources — no Terminal required.
+A native macOS menu bar app for [NDI Free Audio](https://docs.ndi.video/all/developing-with-ndi/utilities/free-audio) — listen to NDI audio sources or broadcast local audio inputs over NDI, with real-time level meters.
 
 ## Features
 
-- **Listen to NDI Source** — Scans your network for NDI audio sources, lets you pick one and an output device, then runs silently in the background
-- **Broadcast Input Device** — Pick a local audio input to broadcast as an NDI source on your network
-- **Background operation** — No Terminal window; uses native macOS dialogs and notifications
-- **Stop/start management** — Relaunch the app while running to stop the current session
+- **Menu bar app** — Lives in the macOS menu bar with no Dock icon; click the waveform icon to open
+- **Listen to NDI sources** — Auto-discovers NDI audio sources on your network, routes audio to any output device
+- **Broadcast audio inputs** — Send any local input device (mic, interface, etc.) as an NDI source
+- **Real-time level meters** — Per-channel VU meters with RMS bars, peak hold indicators, and dBFS readout
+- **Live device switching** — Change sources, inputs, or outputs on the fly without stopping
+- **Multichannel support** — Automatically filters silent channels for clean meter display
 
 ## Prerequisites
 
@@ -23,7 +25,7 @@ cd ndi-free-audio-app
 make install
 ```
 
-This compiles the NDI source finder, builds the `.app` bundle, and installs it to `/Applications/NDI Free Audio.app`.
+This compiles the Swift source, builds the `.app` bundle with an icon, and installs it to `/Applications/NDI Free Audio.app`.
 
 ## Uninstall
 
@@ -33,4 +35,13 @@ make uninstall
 
 ## Usage
 
-Open **NDI Free Audio** from Applications, Launchpad, or Spotlight. Choose a mode, select your devices, and it runs in the background. Reopen the app to stop it.
+1. Launch **NDI Free Audio** from Applications, Launchpad, or Spotlight
+2. Click the waveform icon in the menu bar to open the popover
+3. **To listen**: Select an NDI source and output device, then click **Start Listening**
+4. **To broadcast**: Select an input device, optionally set an NDI source name, then click **Start Broadcasting**
+5. While active, use the inline pickers to switch devices without stopping
+6. Click **Stop** to end the session
+
+## How It Works
+
+The app uses the `Application.NDI.FreeAudio` binary from the NDI SDK for all audio routing. Level metering is handled separately — NDI audio receive for listen mode, and AVAudioEngine input taps for broadcast mode. NDI source discovery uses the NDI C API directly.
