@@ -42,7 +42,6 @@ class NDIBridge {
         guard findInstance != nil else { return }
 
         let semaphore = DispatchSemaphore(value: 0)
-        meterSemaphore = semaphore
 
         lock.lock()
         findingStopped = false

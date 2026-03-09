@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleExecutable</key>
-	<string>NDIFreeAudio</string>
+	<string>NDIMinecart</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.ndi.free-audio</string>
+	<string>com.ndi.minecart</string>
 	<key>CFBundleName</key>
-	<string>NDI Free Audio</string>
+	<string>NDI Minecart</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleVersion</key>
@@ -17,6 +17,6 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>NDI Free Audio needs microphone access to broadcast audio over NDI.</string>
+	<string>NDI Minecart needs microphone access to broadcast audio over NDI.</string>
 </dict>
 </plist>

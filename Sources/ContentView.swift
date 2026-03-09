@@ -9,7 +9,7 @@ struct ContentView: View {
             HStack {
                 Image(systemName: "waveform")
                     .foregroundColor(.accentColor)
-                Text("NDI Free Audio")
+                Text("NDI Minecart")
                     .font(.system(size: 13, weight: .semibold))
                 Spacer()
             }
@@ -37,7 +37,10 @@ struct ContentView: View {
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .background(Color.orange.opacity(0.1))
+                .background(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(Color.orange.opacity(0.1))
+                )
 
                 Divider()
             }
@@ -84,6 +87,7 @@ struct ContentView: View {
                     }
                     .labelsHidden()
                     .controlSize(.small)
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 }
 
                 Picker("Output", selection: $appState.selectedOutputDevice) {
@@ -94,6 +98,7 @@ struct ContentView: View {
                 }
                 .labelsHidden()
                 .controlSize(.small)
+                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
 
                 Button(action: {
                     appState.onStartListening?(appState.selectedSource, appState.selectedOutputDevice)
@@ -104,6 +109,7 @@ struct ContentView: View {
                 }
                 .controlSize(.small)
                 .buttonStyle(.borderedProminent)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .disabled(appState.selectedOutputDevice.isEmpty || appState.selectedSource.isEmpty)
             }
             .padding(12)
@@ -123,11 +129,13 @@ struct ContentView: View {
                 }
                 .labelsHidden()
                 .controlSize(.small)
+                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
 
                 TextField("NDI source name", text: $appState.ndiSourceName)
                     .textFieldStyle(.roundedBorder)
                     .controlSize(.small)
                     .font(.system(size: 11))
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
 
                 Button(action: {
                     let input = appState.selectedInputDevice
@@ -141,6 +149,7 @@ struct ContentView: View {
                 .controlSize(.small)
                 .buttonStyle(.borderedProminent)
                 .tint(.orange)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .disabled(appState.selectedInputDevice.isEmpty)
             }
             .padding(12)
@@ -194,6 +203,7 @@ struct ContentView: View {
                     }
                     .labelsHidden()
                     .controlSize(.small)
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
 
                     Picker("Output", selection: Binding(
                         get: { appState.selectedOutputDevice },
@@ -209,6 +219,7 @@ struct ContentView: View {
                     }
                     .labelsHidden()
                     .controlSize(.small)
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 }
 
                 if case .broadcasting = appState.mode {
@@ -227,6 +238,7 @@ struct ContentView: View {
                     }
                     .labelsHidden()
                     .controlSize(.small)
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 }
 
                 // Level meter
@@ -253,6 +265,7 @@ struct ContentView: View {
                 .controlSize(.small)
                 .buttonStyle(.borderedProminent)
                 .tint(.red)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             }
             .padding(12)
 

@@ -1,6 +1,6 @@
-# NDI Free Audio App for macOS
+# NDI Minecart App for macOS
 
-A native macOS menu bar app for [NDI Free Audio](https://docs.ndi.video/all/developing-with-ndi/utilities/free-audio) — listen to NDI audio sources or broadcast local audio inputs over NDI, with real-time level meters.
+A native macOS menu bar app for [NDI Minecart](https://docs.ndi.video/all/developing-with-ndi/utilities/free-audio) — listen to NDI audio sources or broadcast local audio inputs over NDI, with real-time level meters.
 
 ## Features
 
@@ -20,12 +20,12 @@ A native macOS menu bar app for [NDI Free Audio](https://docs.ndi.video/all/deve
 ## Install
 
 ```bash
-git clone https://github.com/cjcovell/ndi-free-audio-app.git
-cd ndi-free-audio-app
+git clone https://github.com/cjcovell/ndi-minecart.git
+cd ndi-minecart
 make install
 ```
 
-This compiles the Swift source, builds the `.app` bundle with an icon, and installs it to `/Applications/NDI Free Audio.app`.
+This compiles the Swift source, builds the `.app` bundle with an icon, and installs it to `/Applications/NDI Minecart.app`.
 
 ## Uninstall
 
@@ -35,7 +35,7 @@ make uninstall
 
 ## Usage
 
-1. Launch **NDI Free Audio** from Applications, Launchpad, or Spotlight
+1. Launch **NDI Minecart** from Applications, Launchpad, or Spotlight
 2. Click the waveform icon in the menu bar to open the popover
 3. **To listen**: Select an NDI source and output device, then click **Start Listening**
 4. **To broadcast**: Select an input device, optionally set an NDI source name, then click **Start Broadcasting**

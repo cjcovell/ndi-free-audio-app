@@ -38,17 +38,17 @@ struct AudioMeterView: View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     // Background
-                    RoundedRectangle(cornerRadius: 2)
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
                         .fill(Color.black.opacity(0.3))
 
                     // RMS level bar with gradient
-                    RoundedRectangle(cornerRadius: 2)
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
                         .fill(meterGradient)
                         .frame(width: barWidth(for: rms, in: geo.size.width))
 
                     // Peak hold indicator
                     if peakHold > minDB {
-                        Rectangle()
+                        RoundedRectangle(cornerRadius: 1, style: .continuous)
                             .fill(peakHold > -3 ? Color.red : Color.white.opacity(0.8))
                             .frame(width: 2)
                             .offset(x: barWidth(for: peakHold, in: geo.size.width) - 1)
