@@ -58,10 +58,11 @@ if [[ "$MODE" == "Listen to NDI Source" ]]; then
     # Show scanning dialog while searching for NDI sources
     osascript -e 'display notification "Scanning for NDI sources on your network..." with title "NDI Free Audio"'
 
-    # Scan for NDI sources
-    RAW_SOURCES=$("$NDI_FIND" 2>/dev/null)
-    # Deduplicate
-    SOURCES=($(echo "$RAW_SOURCES" | sort -u))
+    # Scan for NDI sources and deduplicate (preserve full names with spaces)
+    SOURCES=()
+    while IFS= read -r line; do
+        [[ -n "$line" ]] && SOURCES+=("$line")
+    done < <("$NDI_FIND" 2>/dev/null | sort -u)
 
     if [[ ${#SOURCES[@]} -eq 0 ]]; then
         # No sources found — let user type one manually
