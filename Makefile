@@ -1,27 +1,33 @@
 NDI_SDK = /Library/NDI SDK for Apple
 APP_NAME = NDI Free Audio.app
 APP_DIR = /Applications/$(APP_NAME)
+BINARY = NDIFreeAudio
+BRIDGING_HEADER = NDI-Bridging-Header.h
+SWIFT_SOURCES = $(wildcard Sources/*.swift)
 NDI_LOGO = $(NDI_SDK)/documentation/brand-assets/1. NDI/1.1 NDI Logo/Light/NDI Logo Master - Light@5x.png
 
 .PHONY: build install clean uninstall
 
-build: ndi-find
+build: $(BINARY)
 
-ndi-find: ndi_find.cpp
-	clang++ -std=c++17 \
+$(BINARY): $(SWIFT_SOURCES) $(BRIDGING_HEADER)
+	swiftc \
+		-import-objc-header $(BRIDGING_HEADER) \
 		-I"$(NDI_SDK)/include" \
 		-L"$(NDI_SDK)/lib/macOS" \
 		-lndi \
-		-rpath "$(NDI_SDK)/lib/macOS" \
-		-o ndi-find \
-		ndi_find.cpp
+		-Xlinker -rpath -Xlinker "$(NDI_SDK)/lib/macOS" \
+		-framework AppKit \
+		-framework SwiftUI \
+		-framework AVFoundation \
+		-framework CoreAudio \
+		-o $(BINARY) \
+		$(SWIFT_SOURCES)
 
 install: build
-	@echo "Installing NDI Free Audio.app..."
+	@echo "Installing $(APP_NAME)..."
 	@mkdir -p "$(APP_DIR)/Contents/MacOS" "$(APP_DIR)/Contents/Resources"
-	@cp launch.sh "$(APP_DIR)/Contents/MacOS/launch"
-	@chmod +x "$(APP_DIR)/Contents/MacOS/launch"
-	@cp ndi-find "$(APP_DIR)/Contents/MacOS/ndi-find"
+	@cp $(BINARY) "$(APP_DIR)/Contents/MacOS/$(BINARY)"
 	@cp Info.plist "$(APP_DIR)/Contents/Info.plist"
 	@# Generate app icon from NDI SDK logo if available
 	@if [ -f "$(NDI_LOGO)" ]; then \
@@ -46,8 +52,7 @@ install: build
 
 uninstall:
 	@rm -rf "$(APP_DIR)"
-	@rm -f /tmp/ndi-free-audio.pid
-	@echo "Uninstalled NDI Free Audio.app"
+	@echo "Uninstalled $(APP_NAME)"
 
 clean:
-	@rm -f ndi-find
+	@rm -f $(BINARY)
