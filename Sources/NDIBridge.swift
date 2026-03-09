@@ -8,22 +8,31 @@ class NDIBridge {
     private var meteringStopped = false
     private var findingStopped = false
     private let lock = NSLock()
+    private var meterSemaphore: DispatchSemaphore?
+    private var findSemaphore: DispatchSemaphore?
     private weak var appState: AppState?
+    private var ndiInitialized = false
 
     init(appState: AppState) {
         self.appState = appState
-        NDIlib_initialize()
+        ndiInitialized = NDIlib_initialize()
     }
 
     deinit {
         stopMetering()
         stopFinding()
-        NDIlib_destroy()
+        if ndiInitialized {
+            NDIlib_destroy()
+        }
     }
+
+    var isInitialized: Bool { ndiInitialized }
 
     // MARK: - Source Discovery
 
     func startFinding() {
+        guard ndiInitialized else { return }
+
         var createSettings = NDIlib_find_create_t()
         createSettings.show_local_sources = true
         createSettings.p_groups = nil
@@ -32,15 +41,35 @@ class NDIBridge {
         findInstance = NDIlib_find_create_v2(&createSettings)
         guard findInstance != nil else { return }
 
-        findingStopped = false
-        findThread = Thread { [weak self] in
-            while let self = self, !self.findingStopped {
-                guard let finder = self.findInstance else { break }
+        let semaphore = DispatchSemaphore(value: 0)
+        meterSemaphore = semaphore
 
-                NDIlib_find_wait_for_sources(finder, 1000)
+        lock.lock()
+        findingStopped = false
+        lock.unlock()
+
+        findSemaphore = semaphore
+        findThread = Thread { [weak self] in
+            defer { semaphore.signal() }
+            while let self = self {
+                self.lock.lock()
+                let stopped = self.findingStopped
+                let finder = self.findInstance
+                self.lock.unlock()
+
+                if stopped || finder == nil { break }
+
+                NDIlib_find_wait_for_sources(finder!, 1000)
+
+                // Re-check after blocking call
+                self.lock.lock()
+                let stoppedAfterWait = self.findingStopped
+                let finderAfterWait = self.findInstance
+                self.lock.unlock()
+                if stoppedAfterWait || finderAfterWait == nil { break }
 
                 var count: UInt32 = 0
-                let sources = NDIlib_find_get_current_sources(finder, &count)
+                let sources = NDIlib_find_get_current_sources(finderAfterWait!, &count)
                 var names: [String] = []
                 for i in 0..<Int(count) {
                     if let name = sources?[i].p_ndi_name {
@@ -57,17 +86,26 @@ class NDIBridge {
     }
 
     func stopFinding() {
+        lock.lock()
         findingStopped = true
+        lock.unlock()
+
+        findSemaphore?.wait()
+        findSemaphore = nil
         findThread = nil
+
+        lock.lock()
         if let finder = findInstance {
             NDIlib_find_destroy(finder)
             findInstance = nil
         }
+        lock.unlock()
     }
 
     // MARK: - Audio Metering via NDI Recv
 
     func startMetering(sourceName: String) {
+        guard ndiInitialized else { return }
         stopMetering()
 
         // Create source — keep name alive as a Swift string, only borrow the pointer during create
@@ -83,22 +121,35 @@ class NDIBridge {
             recvSettings.allow_video_fields = true
             recvSettings.p_ndi_recv_name = nil
 
+            lock.lock()
             recvInstance = NDIlib_recv_create_v3(&recvSettings)
+            lock.unlock()
         }
 
-        guard recvInstance != nil else { return }
+        lock.lock()
+        let hasRecv = recvInstance != nil
+        lock.unlock()
+        guard hasRecv else { return }
 
+        let semaphore = DispatchSemaphore(value: 0)
+        meterSemaphore = semaphore
+
+        lock.lock()
         meteringStopped = false
+        lock.unlock()
+
         meterThread = Thread { [weak self] in
-            while let self = self, !self.meteringStopped {
+            defer { semaphore.signal() }
+            while let self = self {
                 self.lock.lock()
+                let stopped = self.meteringStopped
                 let recv = self.recvInstance
                 self.lock.unlock()
 
-                guard let recv = recv else { break }
+                if stopped || recv == nil { break }
 
                 var audioFrame = NDIlib_audio_frame_v2_t()
-                let frameType = NDIlib_recv_capture_v2(recv, nil, &audioFrame, nil, 100)
+                let frameType = NDIlib_recv_capture_v2(recv!, nil, &audioFrame, nil, 100)
 
                 if frameType == NDIlib_frame_type_audio &&
                    audioFrame.no_channels > 0 && audioFrame.p_data != nil {
@@ -106,7 +157,7 @@ class NDIBridge {
                     DispatchQueue.main.async { [weak self] in
                         self?.appState?.updateLevelsWithPeakHold(levels)
                     }
-                    NDIlib_recv_free_audio_v2(recv, &audioFrame)
+                    NDIlib_recv_free_audio_v2(recv!, &audioFrame)
                 }
             }
         }
@@ -114,10 +165,13 @@ class NDIBridge {
     }
 
     func stopMetering() {
+        lock.lock()
         meteringStopped = true
-        // Wait for thread to stop before destroying recv
+        lock.unlock()
+
+        meterSemaphore?.wait()
+        meterSemaphore = nil
         meterThread = nil
-        Thread.sleep(forTimeInterval: 0.2)
 
         lock.lock()
         if let recv = recvInstance {

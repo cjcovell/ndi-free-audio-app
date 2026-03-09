@@ -6,17 +6,21 @@ class ProcessManager {
 
     var isRunning: Bool { process?.isRunning ?? false }
 
-    func startListening(source: String, outputDevice: String) {
+    /// Start listening to an NDI source, routing audio to a local output device.
+    /// CLI flags: -output = local output device, -output_name = NDI source to receive from.
+    @discardableResult
+    func startListening(source: String, outputDevice: String) -> Bool {
         let args = ["-output", outputDevice, "-output_name", source]
-        launch(arguments: args)
+        return launch(arguments: args)
     }
 
-    func startBroadcasting(inputDevice: String, ndiName: String?) {
+    @discardableResult
+    func startBroadcasting(inputDevice: String, ndiName: String?) -> Bool {
         var args = ["-input", inputDevice]
         if let name = ndiName, !name.isEmpty {
             args += ["-input_name", name]
         }
-        launch(arguments: args)
+        return launch(arguments: args)
     }
 
     func stop() {
@@ -25,7 +29,7 @@ class ProcessManager {
         process = nil
     }
 
-    private func launch(arguments: [String]) {
+    private func launch(arguments: [String]) -> Bool {
         stop()
         let proc = Process()
         proc.executableURL = URL(fileURLWithPath: binaryPath)
@@ -35,8 +39,9 @@ class ProcessManager {
         do {
             try proc.run()
             process = proc
+            return true
         } catch {
-            // silently fail
+            return false
         }
     }
 }

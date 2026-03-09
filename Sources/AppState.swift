@@ -17,7 +17,10 @@ struct AudioLevels: Equatable {
 
     /// Returns a copy with only channels that have signal above the threshold
     func activeChannels(threshold: Float = -80) -> AudioLevels {
-        guard channelCount > 0 else { return self }
+        guard channelCount > 0,
+              rms.count >= channelCount,
+              peak.count >= channelCount,
+              peakHold.count >= channelCount else { return self }
         var activeIndices: [Int] = []
         for ch in 0..<channelCount {
             if peak[ch] > threshold { activeIndices.append(ch) }
@@ -51,6 +54,7 @@ class AppState: ObservableObject {
     @Published var selectedOutputDevice: String = ""
     @Published var selectedInputDevice: String = ""
     @Published var ndiSourceName: String = ""
+    @Published var errorMessage: String?
 
     // Action callbacks — set by AppDelegate
     var onStartListening: ((String, String) -> Void)?
@@ -89,11 +93,11 @@ class AppState: ObservableObject {
                 smoothedPeak[ch] = prevPeak + releaseCoeff * (new.peak[ch] - prevPeak)
             }
 
-            // Peak hold: capture new peaks, slowly decay
+            // Peak hold: capture new peaks, slowly decay (floor at -60 dB)
             if new.peak[ch] > prevHold {
                 peakHold[ch] = new.peak[ch]
             } else {
-                peakHold[ch] = prevHold - peakDecayRate
+                peakHold[ch] = max(prevHold - peakDecayRate, -60.0)
             }
         }
 
