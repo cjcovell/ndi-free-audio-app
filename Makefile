@@ -1,7 +1,7 @@
 NDI_SDK = /Library/NDI SDK for Apple
-APP_NAME = NDI Minecart.app
+APP_NAME = NDI Audio Minecart.app
 APP_DIR = /Applications/$(APP_NAME)
-BINARY = NDIMinecart
+BINARY = NDIAudioMinecart
 BRIDGING_HEADER = NDI-Bridging-Header.h
 SWIFT_SOURCES = $(wildcard Sources/*.swift)
 NDI_LOGO = $(NDI_SDK)/documentation/brand-assets/1. NDI/1.1 NDI Logo/Light/NDI Logo Master - Light@5x.png
