@@ -4,8 +4,10 @@ APP_DIR = /Applications/$(APP_NAME)
 BINARY = NDIAudioMinecart
 BRIDGING_HEADER = NDI-Bridging-Header.h
 SWIFT_SOURCES = $(wildcard Sources/*.swift)
+PKG_ID = com.ndi.audiominecart
+PKG_VERSION = 2.0
 
-.PHONY: build install clean uninstall
+.PHONY: build install clean uninstall package
 
 build: $(BINARY)
 
@@ -39,3 +41,28 @@ uninstall:
 
 clean:
 	@rm -f $(BINARY)
+
+package: build
+	@echo "Building installer package..."
+	@rm -rf build/staging build/pkg
+	@mkdir -p "build/staging/Applications/NDI Audio Minecart.app/Contents/MacOS"
+	@mkdir -p "build/staging/Applications/NDI Audio Minecart.app/Contents/Resources"
+	@mkdir -p build/pkg
+	@cp $(BINARY) "build/staging/Applications/NDI Audio Minecart.app/Contents/MacOS/$(BINARY)"
+	@cp Info.plist "build/staging/Applications/NDI Audio Minecart.app/Contents/Info.plist"
+	@if [ -f "Resources/AppIcon.icns" ]; then \
+		cp Resources/AppIcon.icns "build/staging/Applications/NDI Audio Minecart.app/Contents/Resources/AppIcon.icns"; \
+	fi
+	@pkgbuild \
+		--root build/staging \
+		--identifier $(PKG_ID) \
+		--version $(PKG_VERSION) \
+		--scripts scripts \
+		build/pkg/NDIAudioMinecart-component.pkg
+	@productbuild \
+		--package build/pkg/NDIAudioMinecart-component.pkg \
+		--identifier $(PKG_ID) \
+		--version $(PKG_VERSION) \
+		"build/NDIAudioMinecart-$(PKG_VERSION).pkg"
+	@rm -rf build/staging build/pkg
+	@echo "Package built: build/NDIAudioMinecart-$(PKG_VERSION).pkg"
