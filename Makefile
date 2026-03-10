@@ -45,13 +45,13 @@ clean:
 package: build
 	@echo "Building installer package..."
 	@rm -rf build/staging build/pkg
-	@mkdir -p "build/staging/Applications/NDI Audio Minecart.app/Contents/MacOS"
-	@mkdir -p "build/staging/Applications/NDI Audio Minecart.app/Contents/Resources"
+	@mkdir -p "build/staging/Applications/$(APP_NAME)/Contents/MacOS"
+	@mkdir -p "build/staging/Applications/$(APP_NAME)/Contents/Resources"
 	@mkdir -p build/pkg
-	@cp $(BINARY) "build/staging/Applications/NDI Audio Minecart.app/Contents/MacOS/$(BINARY)"
-	@cp Info.plist "build/staging/Applications/NDI Audio Minecart.app/Contents/Info.plist"
+	@cp $(BINARY) "build/staging/Applications/$(APP_NAME)/Contents/MacOS/$(BINARY)"
+	@cp Info.plist "build/staging/Applications/$(APP_NAME)/Contents/Info.plist"
 	@if [ -f "Resources/AppIcon.icns" ]; then \
-		cp Resources/AppIcon.icns "build/staging/Applications/NDI Audio Minecart.app/Contents/Resources/AppIcon.icns"; \
+		cp Resources/AppIcon.icns "build/staging/Applications/$(APP_NAME)/Contents/Resources/AppIcon.icns"; \
 	fi
 	@pkgbuild \
 		--root build/staging \
