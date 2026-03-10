@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 make build      # Compile the binary (NDIAudioMinecart)
 make install    # Build + create .app bundle in /Applications/NDI Audio Minecart.app
+make package   # Build .pkg installer to build/
 make clean      # Remove compiled binary
 make uninstall  # Remove .app from /Applications
 ```

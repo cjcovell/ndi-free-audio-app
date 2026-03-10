@@ -27,6 +27,22 @@ make install
 
 This compiles the Swift source, builds the `.app` bundle with an icon, and installs it to `/Applications/NDI Audio Minecart.app`.
 
+## Install (Package Installer)
+
+Download the latest `.pkg` from [Releases](https://github.com/cjcovell/ndi-audio-minecart/releases) and double-click to run the installer. It will:
+
+1. Check for the NDI SDK for Apple (opens download page if missing)
+2. Install the app to `/Applications/NDI Audio Minecart.app`
+3. Add NDI Audio Minecart as a Login Item (launches at startup)
+
+### Build the installer from source
+
+```bash
+make package
+```
+
+This produces `build/NDIAudioMinecart-2.0.pkg`.
+
 ## Uninstall
 
 ```bash
