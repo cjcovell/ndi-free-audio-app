@@ -1,4 +1,4 @@
-# NDI Minecart
+# NDI Audio Minecart
 
 A native macOS menu bar app that sends and receives audio over [NDI](https://ndi.video/), with real-time level meters. Built on top of the [NDI Free Audio](https://docs.ndi.video/all/developing-with-ndi/utilities/free-audio) utility from the NDI SDK.
 
@@ -20,12 +20,12 @@ A native macOS menu bar app that sends and receives audio over [NDI](https://ndi
 ## Install
 
 ```bash
-git clone https://github.com/cjcovell/ndi-minecart.git
-cd ndi-minecart
+git clone https://github.com/cjcovell/ndi-audio-minecart.git
+cd ndi-audio-minecart
 make install
 ```
 
-This compiles the Swift source, builds the `.app` bundle with an icon, and installs it to `/Applications/NDI Minecart.app`.
+This compiles the Swift source, builds the `.app` bundle with an icon, and installs it to `/Applications/NDI Audio Minecart.app`.
 
 ## Uninstall
 
@@ -35,7 +35,7 @@ make uninstall
 
 ## Usage
 
-1. Launch **NDI Minecart** from Applications, Launchpad, or Spotlight
+1. Launch **NDI Audio Minecart** from Applications, Launchpad, or Spotlight
 2. Click the waveform icon in the menu bar to open the popover
 3. **To listen**: Select an NDI source and output device, then click **Start Listening**
 4. **To broadcast**: Select an input device, optionally set an NDI source name, then click **Start Broadcasting**
