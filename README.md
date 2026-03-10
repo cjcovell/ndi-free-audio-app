@@ -1,6 +1,6 @@
-# NDI Minecart App for macOS
+# NDI Minecart
 
-A native macOS menu bar app for [NDI Minecart](https://docs.ndi.video/all/developing-with-ndi/utilities/free-audio) — listen to NDI audio sources or broadcast local audio inputs over NDI, with real-time level meters.
+A native macOS menu bar app that sends and receives audio over [NDI](https://ndi.video/), with real-time level meters. Built on top of the [NDI Free Audio](https://docs.ndi.video/all/developing-with-ndi/utilities/free-audio) utility from the NDI SDK.
 
 ## Features
 
@@ -44,4 +44,4 @@ make uninstall
 
 ## How It Works
 
-The app uses the `Application.NDI.FreeAudio` binary from the NDI SDK for all audio routing. Level metering is handled separately — NDI audio receive for listen mode, and AVAudioEngine input taps for broadcast mode. NDI source discovery uses the NDI C API directly.
+The app wraps the `Application.NDI.FreeAudio` CLI binary from the NDI SDK for all audio routing. Level metering is handled independently — NDI audio receive for listen mode, and AVAudioEngine input taps for broadcast mode. NDI source discovery uses the NDI C API directly via a Swift bridging header.
