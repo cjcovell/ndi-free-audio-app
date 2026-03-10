@@ -9,7 +9,7 @@ struct ContentView: View {
             HStack {
                 Image(systemName: "waveform")
                     .foregroundColor(.accentColor)
-                Text("NDI Minecart")
+                Text("NDI Audio Minecart")
                     .font(.system(size: 13, weight: .semibold))
                 Spacer()
             }

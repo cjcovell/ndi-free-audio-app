@@ -40,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let button = statusItem.button {
             button.image = NSImage(
                 systemSymbolName: "waveform",
-                accessibilityDescription: "NDI Minecart"
+                accessibilityDescription: "NDI Audio Minecart"
             )
             button.action = #selector(togglePopover)
             button.target = self
@@ -137,7 +137,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let symbolName = active ? "waveform.circle.fill" : "waveform"
             button.image = NSImage(
                 systemSymbolName: symbolName,
-                accessibilityDescription: "NDI Minecart"
+                accessibilityDescription: "NDI Audio Minecart"
             )
         }
     }
